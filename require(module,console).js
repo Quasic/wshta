@@ -208,29 +208,23 @@ this.stream[k].writeLine(s);
 return x(d);};
 Console.prototype.enter=function(n,params,O){var
 d=O||{depth:1},
-i,
-p,
 c=this,
 x=stack.length;
-//stack[x]=new StackItem("enter",arguments,d);
 stack[x]=new StackItem(n,params,d);
-return function(o){
-	if(c.onExit||d.onExit){
-var
+return O.onExit?function(o){var
 l={value:o,name:n,params:params,options:O,exitArguments:arguments,oldStackLength:stack.length,newStackLength:x},
 p;
 if(stack.oops===stack)p=new Error(n+" is used from an onExit function, possibly resulting in an infinite loop. Use enterAnyway if you're sure it's ok.");
 else stack.oops=stack;
-	if(d.onExit){console.enter("onExit",[o,n,l],{object:O});
+c.enter("onExit",[o,n,l],{object:O});
 if(p){c.trace(p,d,"CIRCULAR");throw p;}
 O.onExit(o,n,l);
-stack.length=l.oldStackLength;}//exit without calling onExit
-	if(c.onExit){console.enter("onExit",[o,n,l],{object:c});
-if(p){c.trace(p,d,"CIRCULAR");throw p;}
-c.onExit(o,n,l);}//don't use return from console.enter to disable onExit infinite loop
+//don't call the function returned by console.enter to disable onExit infinite loop, stack corrected in next 2 lines
 stack.oops=null;
-	}
-stack.length=x;return o;};};
+stack.length=x;return o;}
+//if this is to be kept, it should probably be moved to an outside function, or something?
+:
+function(o){stack.length=x;return o;};};
 Console.prototype.enterAnyway=function(n,params,O){stack.oops=1;this.enter(n,params,O);};//allows calling enter in an onExit, but use cautiously
 Console.prototype.trace=function(msg,options,type){this.formatLog(1,msg,options,type||"TRACE",1);};
 Console.prototype.log=function(msg){this.formatLog(0,msg,"LOG");};
