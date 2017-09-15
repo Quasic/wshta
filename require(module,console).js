@@ -171,6 +171,7 @@ return x((s==="[Object]"?'{'+t.join(',\n')+'}':s+(t.length?'{'+t.join(',\n')+'}'
 stringFrom.host=function(o){return OptS.apply(o);}
 	//Classes
 function functionDescriptor(f){var s=f+'',i=s.indexOf(')');return i<2?s:s.substring(0,i+1);}
+//Do not use enter, or any functions using enter, in the StackItem constructor!
 function StackItem(n,p,O){this.n=n;this.p=p;if(typeof O==="object"){
 this.O=O;
 if(O.object)this.obj=O.object;
@@ -205,24 +206,31 @@ try{
 this.stream[k].writeLine(s);
 }catch(e){stderr.writeLine("Error logging to stream["+k+"]="+this.stringFrom(this.stream[k])+": "+this.stringFrom(e)+" Original error: "+s);}
 return x(d);};
-Console.prototype.enter=function(n,params,O){var d=O||{depth:1},i,p,x=stack.length;
-if(stack.oops===stack){
-p=new Error(n+" is used from an onExit function, possibly resulting in an infinite loop. Use enterAnyway if you're sure you can keep that from happening.");
-this.trace(p,d,"CIRCULAR");
-throw p;
-}
-stack[x]=new StackItem("enter",arguments,d);
-stack.oops=stack;
-f=function(o){
-	if(this.onExit||d.onExit){
-	var l={value:o,name:n,params:params,options:O,exitArguments:arguments,oldStackLength:stack.length,newStackLength:x};
-	if(   d.onExit){console.enter("onExit",[o,n,l],{object: O  });   O.onExit(o,n,l);stack.length=l.oldStackLength;}
-	if(this.onExit){console.enter("onExit",[o,n,l],{object:this});this.onExit(o,n,l);}//don't use return from console.enter to disable onExit infinite loop
-	}
-stack.length=x;return o;};
-stack.oops=null;
+Console.prototype.enter=function(n,params,O){var
+d=O||{depth:1},
+i,
+p,
+c=this,
+x=stack.length;
+//stack[x]=new StackItem("enter",arguments,d);
 stack[x]=new StackItem(n,params,d);
-return f;};
+return function(o){
+	if(c.onExit||d.onExit){
+var
+l={value:o,name:n,params:params,options:O,exitArguments:arguments,oldStackLength:stack.length,newStackLength:x},
+p;
+if(stack.oops===stack)p=new Error(n+" is used from an onExit function, possibly resulting in an infinite loop. Use enterAnyway if you're sure it's ok.");
+else stack.oops=stack;
+	if(d.onExit){console.enter("onExit",[o,n,l],{object:O});
+if(p){c.trace(p,d,"CIRCULAR");throw p;}
+O.onExit(o,n,l);
+stack.length=l.oldStackLength;}//exit without calling onExit
+	if(c.onExit){console.enter("onExit",[o,n,l],{object:c});
+if(p){c.trace(p,d,"CIRCULAR");throw p;}
+c.onExit(o,n,l);}//don't use return from console.enter to disable onExit infinite loop
+stack.oops=null;
+	}
+stack.length=x;return o;};};
 Console.prototype.enterAnyway=function(n,params,O){stack.oops=1;this.enter(n,params,O);};//allows calling enter in an onExit, but use cautiously
 Console.prototype.trace=function(msg,options,type){this.formatLog(1,msg,options,type||"TRACE",1);};
 Console.prototype.log=function(msg){this.formatLog(0,msg,"LOG");};
