@@ -196,7 +196,7 @@ Console.prototype.getStackLength=function(){return stack.length;};
 Console.prototype.dumpStack=function(o){this.trace(stack,o||{},"STACKDUMP");};
 Console.prototype.stringFrom=stringFrom;
 Console.prototype.functionDescriptor=functionDescriptor;
-function stringTime(d){return d.toString().replace(frr,function(a,b){return":"+(100+1*b+(d%1000)/1000).toString().substring(1)+" ";});}
+function stringTime(d){return d.toString().replace(frr,function(a,b){return":"+(+b+100+(d%1000)/1000).toString().substring(1)+" ";});}
 Console.prototype.formatLog=function(k,msg,options,type,trace){
 var i=stack.length-1,x=console.enter("formatLog",arguments,{object:this}),O=options||{},d=new Date,s=O.from?O.from||"O.from":i<0?arguments.caller||stack[i+1]||":/":stack[i--]||"???";
 if(trace||O.trace)for(;i>=0;i--)s+="\n\t...in "+stack[i];
@@ -209,22 +209,11 @@ return x(d);};
 Console.prototype.enter=function(n,params,O){var
 d=O||{depth:1},
 c=this,
+b=O.verbose||this.verbose,
 x=stack.length;
 stack[x]=new StackItem(n,params,d);
-return O.onExit?function(o){var
-l={value:o,name:n,params:params,options:O,exitArguments:arguments,oldStackLength:stack.length,newStackLength:x},
-p;
-if(stack.oops===stack)p=new Error(n+" is used from an onExit function, possibly resulting in an infinite loop. Use enterAnyway if you're sure it's ok.");
-else stack.oops=stack;
-c.enter("onExit",[o,n,l],{object:O});
-if(p){c.trace(p,d,"CIRCULAR");throw p;}
-O.onExit(o,n,l);
-//don't call the function returned by console.enter to disable onExit infinite loop, stack corrected in next 2 lines
-stack.oops=null;
-stack.length=x;return o;}
-//if this is to be kept, it should probably be moved to an outside function, or something?
-:
-function(o){stack.length=x;return o;};};
+if(b)c.formatLog(0,stack[x]+" @stack["+x+"]","ENTER",b={depth:0});
+return function(o){if(b)c.formatLog(0,o,"EXIT "+stack[x]+" returning",b);stack.length=x;return o;};};
 Console.prototype.enterAnyway=function(n,params,O){stack.oops=1;this.enter(n,params,O);};//allows calling enter in an onExit, but use cautiously
 Console.prototype.trace=function(msg,options,type){this.formatLog(1,msg,options,type||"TRACE",1);};
 Console.prototype.log=function(msg){this.formatLog(0,msg,"LOG");};
