@@ -1,7 +1,7 @@
 /* null empty blank stub template
-requires null
+requires nothing
 
-more about it
+Replace the character sequence "null" with your object's name throughout this template, and change the copyright notice below as necessary. (The JS object null is unused.) Also replace this description with one about your object.
 
 Copyright (C) Quasic on GitHub
 This program is free software: you can redistribute it and/or modify
@@ -17,9 +17,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 "use strict";
 var//don't pollute global if require used
-null//same name as file in case require not used
-=(function(){//wrapper in case require not used
-var null={};//setup object inside in case renamed outside if require not used
-if(typeof module!=="undefined"&&module.exports)module.exports=null;//if require used
-return null;//in case require not used
-})();//end wrapper
+null;//same name as file in case require not used
+(function(){
+var
+//protected static variables go here
+null=null={};//setup object in wrapper in case require not used (remove wrapper and extra nulls if no protected variables needed) inside var null for protection from external renaming
+})();
+if(typeof module!=="undefined"&&module.exports)module.exports=null;
