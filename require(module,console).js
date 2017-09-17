@@ -27,8 +27,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //declared outside using only arguments object to avoid eval pollution
 js:function(/*h,module*/){var module=arguments[1];arguments.x=console.enter("require.extensions['.js']",arguments,{depth:0});arguments.v=module.id===module.filename&&require('fso').getBaseName(module.filename)||"*";console.enter(module.id);try{
 return arguments.x(module.returned=new Function("exports,require,module",arguments[0].readAll()+(arguments.v.search(require("module").R.vk)<0?'':";if(typeof "+arguments.v+"!=='undefined')return "+arguments.v+";"))(module.exports,function(n){return module.require(n);},module));
-}catch(e){console.trace(e,{},"JSEVALTRACE");throw arguments.x(e);}},
-trackEval:function(/*js,params,trace*/){arguments.exit=console.enter("trackEval",arguments,{object:this});console.enter(arguments[0],arguments[1]||[]);try{arguments.fn=new Function(arguments[0]);try{return arguments.exit(arguments.fn.apply({},arguments[1]||[]));}catch(e){console.trace(e,{},"Console.prototype.track::run","TRACKED ERROR");e.exit=arguments.exit;throw e;}}catch(e){if(arguments[2])console.trace(e,{},arguments[2],"Console.prototype.track::eval","TRACKED EVAL ERROR");else throw arguments.exit(e);};}//for use by other language scripts, mostly. Use trackMethod, instead
+}catch(e){console.trace(e,{},"JSEVALTRACE");throw e;}},
+trackEval:function(/*js,params,trace*/){arguments.exit=console.enter("trackEval",arguments,{object:this});console.enter(arguments[0],arguments[1]||[]);try{arguments.fn=new Function(arguments[0]);try{return arguments.exit(arguments.fn.apply({},arguments[1]||[]));}catch(e){if(arguments[2])console.trace(e,{},"Console.prototype.track::run","TRACKED ERROR");throw e;}}catch(e){if(arguments[2])console.trace(e,{},arguments[2],"Console.prototype.track::eval","TRACKED EVAL ERROR");else throw e;};}//for use by other language scripts, mostly. Use trackMethod, instead
 };if(!Array.prototype.indexOf)Array.prototype.indexOf=function(obj,fromIndex){var o=Object(this),len=o.length>>>0,n,k;if(!len||(n=Math.ceil(Math.abs(fromIndex))||0)>=len)return-1;for(k=n<0?Math.max(len-Math.abs(n),0):n;k<len;k++)if(k in o&&o[k]===obj)return k;return-1;};//used in stringFrom and module code
 (function(){var
 OptS=Object.prototype.toString,
@@ -123,17 +123,17 @@ for(i=0;i<a.length;i++)if(window.document[a[i]]===o)return"window.document."+a[i
 */
 	/*t=[];
 	if(opt.showInherited||!o.hasOwnProperty)for(i in o)
-	try{     t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+this.stringFrom(o[i],opt));}
+	try{     t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));}
 	catch(e){t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+'!');}
 	else for(i in o)if(o.hasOwnProperty(i))
-	try{     t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+this.stringFrom(o[i],opt));}
-	catch(e){t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+'->'+this.stringFrom(e,opt));}
+	try{     t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));}
+	catch(e){t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+'->'+stringFrom(e,opt));}
 	return s+'{'+t.join(',')+'}';*/
 	}
 	if(typeof(o+'')==="undefined")return"[!toString"+s+"]";
 	if(o.callee&&o.caller&&"length"in o)s="[arguments]";
 	if(opt.depth<1){
-	if(o instanceof Console)return'[Console'+this.stringFrom(o.stream,{depth:0})+']';
+	if(o instanceof Console)return'[Console('+stringFrom(o.stream[0],{depth:0})+','+stringFrom(o.stream[1],{depth:0})+')'+(o.verbose?'verbose':'')+']';
 	if(o instanceof Module)return'[Module "'+o.id.replace(R.q,'\\"')+'"'+(o.loaded?'':'(loading)')+']';
 	return s;}
 if(opt.recursiveList.indexOf(o)>=0)return"[Circular "+s.substring(8);
@@ -177,6 +177,7 @@ this.O=O;
 if(O.object)this.obj=O.object;
 if(O.deprecated)console.warn(this+" is deprecated. "+O.deprecated);
 }else this.O={};
+if(!(''+n))console.trace("Empty stack name for "+this);
 }
 StackItem.prototype.toString=function(){var p=[],i;
 if(this.p&&this.p.length)for(i=0;i<this.p.length;i++)p[i]=stringFrom(this.p[i],this.O);
@@ -185,12 +186,12 @@ return((this.obj?stringFrom(this.obj,this.obj instanceof Module||this.obj instan
 +(this.O.deprecated?'[deprecated]':'')
 +(this.p&&this.p.callee?" as "+functionDescriptor(this.p.callee):'')
 //caller empty outside of function
-||"[empty name]"+stringFrom(this,this.O));};
+);};
 var stack=[],tc={};
 function Console(out,err){var x=console.enter("require('console').Console",arguments);
 this.stream=[out,err||out];
 if(typeof out.writeLine==="undefined")throw x(new Error("out stream can't writeLine: "+this.stringFrom(out)));
-if(typeof this.stream[1].writeLine==="undefined")throw x(new Error("err stream can't writeLine: "+this.stringFrom(err)));x();}
+if(typeof this.stream[1].writeLine==="undefined")throw new Error("err stream can't writeLine: "+this.stringFrom(err));x();}
 Console.prototype.Console=Console;
 Console.prototype.getStackLength=function(){return stack.length;};
 Console.prototype.dumpStack=function(o){this.trace(stack,o||{},"STACKDUMP");};
@@ -209,14 +210,26 @@ return x(d);};
 Console.prototype.enter=function(n,params,O){var
 d=O||{depth:1},
 c=this,
-b=O.verbose||this.verbose,
-x=stack.length;
+b=c.verbose||d.verbose,
+x=stack.length,
+f=function(o){if(b){
+b=stack.oops===stack?{depth:0}:d;
+stack.oops=stack;
+c.stream[0].writeLine(stringTime(new Date)+" EXIT@stack["+x+"] "+stack[x]+" returning "+c.stringFrom(o,b));
+if(b===d)stack.oops=null;
+}stack.length=x;return o;};
+f.resume=function(e,O){
+if(e)c.formatLog(1,e,O||d,"RESUME_TRACE",1);
+if(b)c.formatLog(0,e||"No error given",O||d,"RESUME@stack["+x+"] "+stack[x]+" from stack["+(stack.length-1)+"] "+stack[stack.length-1]);
+stack.length=x+1;return e;};
+stack[x]=new StackItem("enter",arguments,d);
 stack[x]=new StackItem(n,params,d);
-if(b)c.formatLog(0,stack[x]+" @stack["+x+"]","ENTER",b={depth:0});
-return function(o){if(b)c.formatLog(0,o,"EXIT "+stack[x]+" returning",b);stack.length=x;return o;};};
+if(b)c.stream[0].writeLine(stringTime(new Date)+" ENTER@stack["+x+"] "+stack[x]+" verbosity "+(d.verbose?"local":"global"));
+return f;
+};
 Console.prototype.enterAnyway=function(n,params,O){stack.oops=1;this.enter(n,params,O);};//allows calling enter in an onExit, but use cautiously
 Console.prototype.trace=function(msg,options,type){this.formatLog(1,msg,options,type||"TRACE",1);};
-Console.prototype.log=function(msg){this.formatLog(0,msg,"LOG");};
+Console.prototype.log=function(msg,options){this.formatLog(0,msg,options,"LOG");};
 Console.prototype.dir=function(o,options){this.formatLog(0,o,options,"INSPECT");};
 Console.prototype.info=function(msg){this.formatLog(0,msg,"INFO");};
 Console.prototype.warn=function(msg){this.formatLog(1,msg,"WARNING");};
@@ -227,8 +240,8 @@ Console.prototype.throwifnot=Console.prototype.assert=function(test,msg){if(test
 Console.prototype.logifnot=function(test,msg){if(test)return;this.log(msg);};//~browser version of assert
 Console.prototype.logif=function(test,msg){if(test)this.log(msg);};
 Console.prototype.logThru=function(o){this.log(o);return o;}
-Console.prototype.track=function(fn,params,trace){var x=console.enter("track",arguments,{object:this,deprecated:"Use trackMethod, instead, as this makes logs longer"});console.enter(fn,params||[]);try{return x(fn.apply({},params||[]));}catch(e){if(trace)console.trace(e,{},trace,"Console.prototype.track::apply","TRACKED ERROR");else throw x(e);}x();};
-Console.prototype.trackMethod=function(object,method,params){var x=console.enter("track",arguments,{object:this});console.enter(method,params,{object:object});try{return x(object[method].apply(object,params||[]));}catch(e){console.trace(e,{},"Console.prototype.trackMethod::apply","TRACKED METHOD ERROR");e.exit=x;throw e;}x();}
+Console.prototype.track=function(fn,params,trace){var x=console.enter("track",arguments,{object:this,deprecated:"Use trackMethod, instead, as this makes logs longer"});console.enter(fn,params||[]);try{return x(fn.apply({},params||[]));}catch(e){if(trace)console.trace(e,{},trace,"Console.prototype.track::apply","TRACKED ERROR");else throw e;}x();};
+Console.prototype.trackMethod=function(object,method,params,trace){var x=console.enter("track",arguments,{object:this});console.enter(method,params,{object:object});try{return x(object[method].apply(object,params||[]));}catch(e){if(trace)console.trace(e,{},"Console.prototype.trackMethod::apply","TRACKED METHOD ERROR");else throw e;}x();}
 Console.prototype.trackEval=module.trackEval;
 if(typeof console!=="undefined")Console.host=console;
 if(mainpath!=thispath)stack[0]=new StackItem(mainpath);
@@ -245,7 +258,7 @@ var X=console.enter(thispath);
 function Module(id,exports){cache[this.id=id]=this;this.loaded=false;this.exports=exports||{};this.filename=id;this.parents=[];this.children=[];}
 Module.prototype.create=function(n,exports){var x=console.enter("create",arguments,{object:this}),m=new Module(n,exports);m.filename=this.filename;if(m.parents.indexOf(this)<0){m.parents.push(this);this.children.push(this);}return x(m);};
 Module.prototype.require=function(n){var x=console.enter("require",arguments,{object:this}),f=this.resolve(n);
-if(!f)throw x(new Error('Module "'+n+'" not found from '+this.filename));
+if(!f)throw new Error('Module "'+n+'" not found from '+this.filename);
 var b={},m=cache[f]/*&&cache[f].ts==f.dateLastModified&&cache[f]*/||axo.hasOwnProperty(f)&&(new Module(f,new ActiveXObject(axo[f])).loaded=true)&&cache[f]||new Module(f,b);
 if(m.exports===b||m.parents.indexOf(this)<0){this.children.push(m);m.parents.push(this);}
 if(m.exports!==b)return x(m.exports);
@@ -318,7 +331,7 @@ require=mRequire(module);
 if(wsh&&WScript.scriptFullName.search(fmr)>=0){
 try{
 WScript.echo(require("module").info());
-}catch(e){console.trace(e,{},"SELFTEST");throw X(e);}
+}catch(e){console.trace(e,{},"SELFTEST");throw e;}
 try{
 require("./debugConsole.js")();
 }catch(e){console.trace(e,{},"ERRORINdebugConsole.js");throw e;}
