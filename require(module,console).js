@@ -32,9 +32,20 @@ trackEval:function(/*js,params,trace*/){arguments.exit=console.enter("trackEval"
 };if(!Array.prototype.indexOf)Array.prototype.indexOf=function(obj,fromIndex){var o=Object(this),len=o.length>>>0,n,k;if(!len||(n=Math.ceil(Math.abs(fromIndex))||0)>=len)return-1;for(k=n<0?Math.max(len-Math.abs(n),0):n;k<len;k++)if(k in o&&o[k]===obj)return k;return-1;};//used in stringFrom and module code
 (function(){var
 OptS=Object.prototype.toString,
-R={q:/"/g,vk:/^[a-zA-Z_$][a-zA-Z0-9_$]*$/,fp:/\//,fd:/^([A-Za-z]:|)\\/,fx:/["<|*?:>]/,s:/ /g,trim:/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$//*,triml:/^[\s\uFEFF\xA0]+/,trimr:/[\s\uFEFF\xA0]+$/*/},
-frr=/:([0-9][0-9]) /,
-fmr=/[\\\/]require\(module,console\)\.js$/,
+R={
+bp:/\\/g,
+q:/"/g,
+z:/\0/g,
+s:/ /g,
+vk:/^[a-zA-Z_$][a-zA-Z0-9_$]*$/,
+//triml:/^[\s\uFEFF\xA0]+/,trimr:/[\s\uFEFF\xA0]+$/,
+trim:/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/,
+fp:/\//,
+//fpb:/\\\//g,
+fd:/^([A-Za-z]:|)\\/,
+fx:/["<|*?:>]/,
+fr:/:([0-9][0-9]) /,
+fm:/[\\\/]require\(module,console\)\.js$/},
 thisfilename="require(module,console).js",
 thispath,mainpath,
 fso=typeof fso==="object"&&fso||typeof FSO==="object"&&FSO||new ActiveXObject("Scripting.FileSystemObject"),
@@ -88,7 +99,7 @@ function stringFrom(o,Opt){var s=typeof o;//deep inspect recursive?
 //other functions that could call stringFrom should not be used before or in the opt.depth===0 check to avoid infinite loops
 	if(s==="number"||s==="boolean"||s==="undefined"||o===null)return''+o;
 	if(s==="string"){
-	return o.indexOf('"')>=0&&o.indexOf("'")<0?"'"+o+"'":'"'+o.replace(R.q,'\\"')+'"';
+	return o.indexOf('"')>=0&&o.indexOf("'")<0?"'"+o.replace(R.c,"\\\\").replace(R.z,"\\0")+"'":'"'+o.replace(R.c,"\\\\").replace(R.z,"\\0").replace(R.q,'\\"')+'"';
 	}
 	if(s==="object"||s==="function"){
 	if(o instanceof Enumerator)return'[Enumerator]';
@@ -197,7 +208,7 @@ Console.prototype.getStackLength=function(){return stack.length;};
 Console.prototype.dumpStack=function(o){this.trace(stack,o||{},"STACKDUMP");};
 Console.prototype.stringFrom=stringFrom;
 Console.prototype.functionDescriptor=functionDescriptor;
-function stringTime(d){return d.toString().replace(frr,function(a,b){return":"+(+b+100+(d%1000)/1000).toString().substring(1)+" ";});}
+function stringTime(d){return d.toString().replace(R.fr,function(a,b){return":"+(+b+100+(d%1000)/1000).toString().substring(1)+" ";});}
 Console.prototype.formatLog=function(k,msg,options,type,trace){
 var i=stack.length-1,x=console.enter("formatLog",arguments,{object:this}),O=options||{},d=new Date,s=O.from?O.from||"O.from":i<0?arguments.caller||stack[i+1]||":/":stack[i--]||"???";
 if(trace||O.trace)for(;i>=0;i--)s+="\n\t...in "+stack[i];
@@ -328,7 +339,7 @@ for(q in axo)Q+=' '+q;
 return Q;},create:function(n,exports){return console.enter("require('module').create",arguments)(new Module(n,exports));},extensions:extensions,R:R,stringTime:stringTime}).loaded=true;
 require=mRequire(module);
 }catch(e){console.trace(e,{},"ERRORINbase");throw e;}
-if(wsh&&WScript.scriptFullName.search(fmr)>=0){
+if(wsh&&WScript.scriptFullName.search(R.fm)>=0){
 try{
 WScript.echo(require("module").info());
 }catch(e){console.trace(e,{},"SELFTEST");throw e;}
