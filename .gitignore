@@ -1,3 +1,4 @@
 errors.log
 console.log
 tools/local/
+*.bak
