@@ -222,7 +222,10 @@ try{
 this.stream[k].writeLine(s);
 }catch(e){stderr.writeLine("Error logging to stream["+k+"]="+this.stringFrom(this.stream[k])+": "+this.stringFrom(e)+" Original error: "+s);}
 return x(d);};
-Console.prototype.enter=function(n,params,O){return this.entero(O&&O.object,n,params,O);};//almost deprecated...
+Console.prototype.enter=function(n,params,O){
+this.enter=Console.prototype.enter=function(n,params,O){return this.entero(O&&O.object,n,params,O);}
+this.formatLog(1,"Warning: Console.prototype.enter(name,params,options) is deprecated in favor of Console.prototype.entero(object,name,params,options)",O,"DEPRECATION_TRACE",1);
+return this.entero(O&&O.object,n,params,O);};
 Console.prototype.enteroAnyway=function(object,n,params,O){stack.oops=1;this.entero(object,n,params,O);};//allows calling entero in an onExit, but use cautiously
 Console.prototype.entero=function(object,n,params,O){var
 d=O||{depth:1},
