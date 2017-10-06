@@ -24,7 +24,7 @@ vb.language="VBScript";
 vb.allowUI=true;
 if(typeof module!=="undefined"&&typeof module.exports!=="undefined"){
 module.exports=VBScript;
-require("module").extensions['.vbs']=function(h,module){var x=console.enter("require.extensions['.vbs']",arguments),c=h.readAll();
+require("module").extensions['.vbs']=function(h,module){var x=console.entero(0,"require.extensions['.vbs']",arguments),c=h.readAll();
 vb.execute(c);//no return value to export? parse code for subs and functions to export globally as object with calls to run, possibly using new ScriptControl? Can we share objects like module?
 x();};
 }

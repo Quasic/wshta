@@ -12,13 +12,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/"use strict";if(typeof module==="undefined"){module=console={enter:function(s){WScript.echo(s);return function(o){return o;}},log:function(s){WScript.echo(s);},Console:function(){this.enter=module.enter;this.dir=this.log=module.log;this.getStackLength=function(){return 0;};this.trace=function(e,b,c){WScript.echo(c+" "+e.name+"#"+e.number+":"+e.message);}},create:function(n){WScript.echo("Create: "+n);}};require=function(n){WScript.echo("require: "+n);return{R:{q:/"/g},eval:function(s){WScript.echo("vbs: "+s);}};};require.extensions={".js":function(h){WScript.echo("js: "+h.readAll());}};}//syntax check
-module.exports=function(M,form,O){var x=console.enter("debugConsole",arguments),Q,q="",P=require("module"),R=P.R,rnl=/\r?\n/,c=console,o=O||{},m=M||module.create("<debugConsoleSandbox>"),js=P.extensions[".js"];
+*/"use strict";if(typeof module==="undefined"){module=console={entero:function(o,s){WScript.echo(s);return function(o){return o;}},log:function(s){WScript.echo(s);},Console:function(){this.entero=module.entero;this.dir=this.log=module.log;this.getStackLength=function(){return 0;};this.trace=function(e,b,c){WScript.echo(c+" "+e.name+"#"+e.number+":"+e.message);}},create:function(n){WScript.echo("Create: "+n);}};require=function(n){WScript.echo("require: "+n);return{R:{q:/"/g},eval:function(s){WScript.echo("vbs: "+s);}};};require.extensions={".js":function(h){WScript.echo("js: "+h.readAll());}};}//syntax check
+module.exports=function(M,form,O){var x=console.entero(0,"debugConsole",arguments),Q,q="",P=require("module"),R=P.R,rnl=/\r?\n/,c=console,o=O||{},m=M||module.create("<debugConsoleSandbox>"),js=P.extensions[".js"];
 if(o.log)console.log("entering <debugConsole>");
 function logjs(input){var
-x=console.enter("debugConsole::logjs",arguments),
+x=console.entero(0,"debugConsole::logjs",arguments),
 s=input.replace(R.q,'\\"');
-js({readAll:function(){return'arguments.x=console.enter("js> '+s+'");arguments.X=console.getStackLength();try{console.dir(eval("'+s+'"));if(console.getStackLength()!==arguments.X)console.formatLog(0,"Stack imbalance: found "+console.getStackLength()+"!="+arguments.X+", the expected value",{},"STACK",1);}catch(e){console.formatLog(0,e,{},"EVALconsole",1);}arguments.x();';}},m);
+js({readAll:function(){return'arguments.x=console.entero(0,"js> '+s+'");arguments.X=console.getStackLength();try{console.dir(eval("'+s+'"));if(console.getStackLength()!==arguments.X)console.formatLog(0,"Stack imbalance: found "+console.getStackLength()+"!="+arguments.X+", the expected value",{},"STACK",1);}catch(e){console.formatLog(0,e,{},"EVALconsole",1);}arguments.x();';}},m);
 x();}
 if(typeof WScript!=="undefined"){
 console=new c.Console({writeLine:function(s){WScript.echo(s);}});
@@ -74,7 +74,7 @@ console=new console.Console({writeLine:function(s){alert(s);}});
 if(module===console){eval(input);}
 console.log("Welcome to <debugConsole>");
 if(!form){
-console.enter("<debugConsole>");
+console.entero(0,"<debugConsole>");
 while(q=Q())logjs(q);
 console.log("exiting <debugConsole>");
 console=c;

@@ -11,11 +11,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/"use strict";function Page(h,help,hf,hp,he,f,p,e){var x=Page.enter("Page",arguments);Page.xp=arguments;Page.content=h;Page.help=help;Page.hook=hf||Page.nop;Page.hookp=hp;Page.hooke=he;Page.f=f;Page.p=p;Page.e=e;clearTimeout(Page.t);Page.t=setTimeout(Page.u,1);x();}
-Page.turn=function(o){Page.enter("Page.turn",arguments)(Page(o.content,o.help,o.onsubmit,o.onsubmitArguments,o.onsumitError,o.callback,o.callbackArguments,o.callbackError));};
-Page.enter=typeof console!=="undefined"&&console.enter||function(){return function(o){return o;}};
+*/"use strict";function Page(h,help,hf,hp,he,f,p,e){var x=Page.entero(0,"Page",arguments);Page.xp=arguments;Page.content=h;Page.help=help;Page.hook=hf||Page.nop;Page.hookp=hp;Page.hooke=he;Page.f=f;Page.p=p;Page.e=e;clearTimeout(Page.t);Page.t=setTimeout(Page.u,1);x();}
+Page.turn=function(o){Page.entero(0,"Page.turn",arguments)(Page(o.content,o.help,o.onsubmit,o.onsubmitArguments,o.onsumitError,o.callback,o.callbackArguments,o.callbackError));};
+Page.entero=typeof console!=="undefined"&&console.entero||function(){return function(o){return o;}};
 Page.trackMethod=typeof console!=="undefined"&&console.trackMethod||function(o,f,p){return o[f].apply(o,p);};
-Page.u=function(){var x=Page.enter("Page",Page.xp);Page.enter("Page.u",arguments);if(!Page.form)(Page.form=document.forms[0]);Page.form.innerHTML=Page.content;Page.form.onsubmit=function(){Page.trackMethod(Page,"hook",Page.hookp,Page.hooke);return false;};if(Page.f)Page.trackMethod(Page,"f",Page.p,Page.e);Page.content=Page.p=Page.f=Page.t=null;x();};
+Page.u=function(){var x=Page.entero(0,"Page",Page.xp);Page.entero(0,"Page.u",arguments);if(!Page.form)(Page.form=document.forms[0]);Page.form.innerHTML=Page.content;Page.form.onsubmit=function(){Page.trackMethod(Page,"hook",Page.hookp,Page.hooke);return false;};if(Page.f)Page.trackMethod(Page,"f",Page.p,Page.e);Page.content=Page.p=Page.f=Page.t=null;x();};
 Page.hook=Page.nop=function(){};Page.hookp=[];
 Page.helper=function(){
 if(typeof Page.help==="object"){
