@@ -35,6 +35,8 @@ OptS=Object.prototype.toString,
 R={
 bp:/\\/g,
 q:/"/g,
+r:/\r/g,
+n:/\n/g,
 z:/\0/g,
 s:/ /g,
 vk:/^[a-zA-Z_$][a-zA-Z0-9_$]*$/,
@@ -99,7 +101,7 @@ function stringFrom(o,Opt){var s=typeof o;//deep inspect recursive?
 //other functions that could call stringFrom should not be used before or in the opt.depth===0 check to avoid infinite loops
 	if(s==="number"||s==="boolean"||s==="undefined"||o===null)return''+o;
 	if(s==="string"){
-	return o.indexOf('"')>=0&&o.indexOf("'")<0?"'"+o.replace(R.c,"\\\\").replace(R.z,"\\0")+"'":'"'+o.replace(R.c,"\\\\").replace(R.z,"\\0").replace(R.q,'\\"')+'"';
+	return o.indexOf('"')>=0&&o.indexOf("'")<0?"'"+o.replace(R.bp,"\\\\").replace(R.z,"\\0").replace(R.n,"\\n").replace(R.r,"\\r")+"'":'"'+o.replace(R.bp,"\\\\").replace(R.z,"\\0").replace(R.n,"\\n").replace(R.r,"\\r").replace(R.q,'\\"')+'"';
 	}
 	if(s==="object"||s==="function"){
 	if(o instanceof Enumerator)return'[Enumerator]';
@@ -142,7 +144,7 @@ for(i=0;i<a.length;i++)if(window.document[a[i]]===o)return"window.document."+a[i
 	return s+'{'+t.join(',')+'}';*/
 	}
 	if(typeof(o+'')==="undefined")return"[!toString"+s+"]";
-	if(o.callee&&o.caller&&"length"in o)s="[arguments]";
+	if(o.callee&&"caller"in o&&"length"in o)s="[Arguments]";
 	if(opt.depth<1){
 	if(o instanceof Console)return'[Console('+stringFrom(o.stream[0],{depth:0})+','+stringFrom(o.stream[1],{depth:0})+')'+(o.verbose?'verbose':'')+']';
 	if(o instanceof Module)return'[Module "'+o.id.replace(R.q,'\\"')+'"'+(o.loaded?'':'(loading)')+']';
@@ -159,7 +161,7 @@ if((typeof o.inspect==="function"||OptS.apply(o.inspect)==='[object Function]')&
 	if(opt.depth)opt.depth--;
 	if(s==='[Function]'){
 	s=(opt.useFunctionDescriptor?functionDescriptor(o):o.toString())+'\t';
-	}else if((s.substring(s.length-6)==='Array]'||s.substring(0,11)==="[arguments]")&&(opt.maxArrayLength||opt.maxArrayLength===null)){
+	}else if((s.substring(s.length-6)==='Array]'||s.substring(0,11)==="[Arguments]")&&(opt.maxArrayLength||opt.maxArrayLength===null)){
 	t=[];
 	i=opt.maxArrayLength===null?o.length:Math.min(o.length,opt.maxArrayLength);
 	for(i--;i>=0;i--)t[i]=stringFrom(o[i],opt);
@@ -168,16 +170,16 @@ if((typeof o.inspect==="function"||OptS.apply(o.inspect)==='[object Function]')&
 	t=[];
 	if(i<0||s.substring(s.length-6)==='Array]'){
 	if(opt.showInherited)for(i in o)if(isNaN(i))
-	t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
+	t.push((i.search(R.vk)<0?'"'+i.replace(R.bp,"\\\\").replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
 	else for(i in o)if(o.hasOwnProperty(i)&&isNaN(i))
-	t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
+	t.push((i.search(R.vk)<0?'"'+i.replace(R.bp,"\\\\").replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
 	}else{
 	if(opt.showInherited||!o.hasOwnProperty)for(i in o)
-	t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
+	t.push((i.search(R.vk)<0?'"'+i.replace(R.bp,"\\\\").replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
 	else for(i in o)if(o.hasOwnProperty(i))
-	t.push((i.search(R.vk)<0?'"'+i.replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
+	t.push((i.search(R.vk)<0?'"'+i.replace(R.bp,"\\\\").replace(R.q,'\\"')+'"':i)+':'+stringFrom(o[i],opt));
 	}
-	if(!t.length&&s.substring(0,11)==="[arguments]")t=['callee:'+stringFrom(o.callee,opt),'caller:'+stringFrom(o.caller,opt)];
+	if(!t.length&&s.substring(0,11)==="[Arguments]")t=['callee:'+stringFrom(o.callee,opt),'caller:'+stringFrom(o.caller,opt)];
 return x((s==="[Object]"?'{'+t.join(',\n')+'}':s+(t.length?'{'+t.join(',\n')+'}':'')));}return"["+s+"]";}
 stringFrom.host=function(o){return OptS.apply(o);}
 	//Classes
@@ -247,6 +249,7 @@ stack[x]=new StackItem(object,n,params,d);
 if(b)c.stream[0].writeLine(stringTime(new Date)+" ENTER@stack["+x+"] "+stack[x]+" verbosity "+(d.verbose?"local":"global"));
 return f;
 };
+Console.prototype.entero.getStackLength=function(){return stack.length;};
 Console.prototype.trace=function(msg,options,type){this.formatLog(1,msg,options,type||"TRACE",1);};
 Console.prototype.log=function(msg,options){this.formatLog(0,msg,options,"LOG");};
 Console.prototype.dir=function(o,options){this.formatLog(0,o,options,"INSPECT");};
