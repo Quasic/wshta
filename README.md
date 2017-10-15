@@ -24,6 +24,10 @@ Internet Explorer 4+ will provide the above languages, as well.
 I'm working on a [system test script](https://github.com/Quasic/wshta/tools/testRequirements.wsf) to check for problems, or you can just try it to see if it works, and post the error log or message if it doesn't.
 
 ### Languages
+#### HTML
+
+#### XML
+
 #### JScript
 The JavaScript in here is the JScript flavor, for environments with ActiveXObject. JScript is the base language, due to its ability to create objects. The base code is in [require(module,console).js](https://github.com/Quasic/wshta/require(module,console).js), though most of the scripts work without it. Each .js filename lists the names of the global objects it creates if loaded in a script tag. So, the base script creates 3 global objects, named require, module, and console. Most scripts create only one object. The base script's require function is very similar to node.js's, though it currently doesn't provide full node.js support. The base can also be [included without script tag support](https://github.com/Quasic/wshta/templates/require.md).
 #### VBScript
@@ -45,11 +49,8 @@ The console object was developed for reporting problems over a network, or debug
 The require and module objects are just for convenience. For a simpler approach without the console, see [templates/require.md](https://github.com/Quasic/wshta/tree/master/templates/require.md), which can be used to import any script, not just this one.
 
 
-## BATch
+## BATch and PowerShell
 These are mostly utility scripts.
-
-## PowerShell
-
 
 ## History
 I've been using these and their predecessors on a LAN for a long time and thought why not share them publicly?
