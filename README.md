@@ -21,7 +21,7 @@ VBScript 2.0 is needed for CreateObject
 
 Internet Explorer 4+ will provide the above languages, as well.
 
-I'm working on a [system test script](https://github.com/Quasic/wshta/tools/testRequirements.wsf) to check for problems, or you can just try it to see if it works, and post the error log or message if it doesn't.
+I'm working on a [system test script](https://github.com/Quasic/tree/master/wshta/tools/testRequirements.wsf) to check for problems, or you can just try it to see if it works, and post the error log or message if it doesn't.
 
 ### Languages
 #### HTML
@@ -29,7 +29,7 @@ I'm working on a [system test script](https://github.com/Quasic/wshta/tools/test
 #### XML
 
 #### JScript
-The JavaScript in here is the JScript flavor, for environments with ActiveXObject. JScript is the base language, due to its ability to create objects. The base code is in [require(module,console).js](https://github.com/Quasic/wshta/require(module,console).js), though most of the scripts work without it. Each .js filename lists the names of the global objects it creates if loaded in a script tag. So, the base script creates 3 global objects, named require, module, and console. Most scripts create only one object. The base script's require function is very similar to node.js's, though it currently doesn't provide full node.js support. The base can also be [included without script tag support](https://github.com/Quasic/wshta/templates/require.md).
+The JavaScript in here is the JScript flavor, for environments with ActiveXObject. JScript is the base language, due to its ability to create objects. The base code is in [require(module,console).js](https://github.com/Quasic/wshta/require(module,console).js), though most of the scripts work without it. Each .js filename lists the names of the global objects it creates if loaded in a script tag. So, the base script creates 3 global objects, named require, module, and console. Most scripts create only one object. The base script's require function is very similar to node.js's, though it currently doesn't provide full node.js support. The base can also be [included without script tag support](https://github.com/Quasic/wshta/tree/master/templates/require.md).
 #### VBScript
 VBScript provides its MsgBox function. It also handles objects a bit differently. Each .vbs filename lists the names of classes, subs, and/or functions, or common prefixes, contained in the file. [VBScript can load the base objects](https://github.com/Quasic/wshta/tree/master/templates/require(module,console,fso,js).vbs).
 
@@ -54,4 +54,4 @@ These are mostly utility scripts.
 
 ## History
 I've been using these and their predecessors on a LAN for a long time and thought why not share them publicly?
-They were originally planned to be released in [a general scripts collection](//github.com/Quasic/scripts), but thought that was too bulky.
+They were originally planned to be released in [a general scripts collection](//github.com/Quasic/scripts), but I thought that was too bulky.
