@@ -1,0 +1,99 @@
+<HTML><HEAD><HTA:APPLICATION ID="QuaEval"
+icon="../favicon.ico"
+SCROLL="yes"
+SINGLEINSTANCE="yes"
+MaximizeButton="yes"
+MinimizeButton="yes"
+BORDER="thick"
+BORDERSTYLE="complex"/><TITLE>Quasic's Eval Tester</TITLE><link rel=stylesheet href=console.css /><script language="Jscript" src="require(module,console).js" id="jscriptsrc"></script><SCRIPT LANGUAGE="VBScript" src="" id="vbscriptsrc"></SCRIPT></HEAD><BODY><CENTER><form></form>Copyright &copy; <a href="http://github.com/Quasic">Quasic</a>
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <a href="http://www.gnu.org/licenses">http://www.gnu.org/licenses</a>.<hr /><script>
+var c=console.Console,HTML=require("jsformat/HTML.js");
+console=new c({writeLine:function(s){
+var p=document.createElement("p");
+p.innerHTML=HTML.fromFormattedString(s);
+document.body.appendChild(p);}});
+console.Console=c;
+document.write(HTML.fromString(require('module').info()));
+require('debugConsole.js')(0,document.forms[0],{resultHeight:300+"px"});
+function loadJScript(f){document.getElementById('jscriptsrc').src=f;}
+function loadVBScript(f){document.getElementById('vbscriptsrc').src=f;}
+function loadJS(f){jscriptsrc.src=f;}
+function loadVBS(f){vbscriptsrc.src=f;}
+</script></BODY><!--SCRIPT LANGUAGE="VBScript">
+window.resizeto 400,400
+Sub Window_Onload
+'self.MoveTo screen.availWidth/2-(document.body.clientWidth+20)/2,screen.availHeight/2-(document.body.clientHeight+20)/2
+vchange
+End Sub
+vbeval2type=0
+function vbeval2(s)
+on error resume next
+vbeval2=Eval(s)
+vbtype(vbeval2)
+if Err.Number then
+vbeval2="vbERROR#"&Err.Number&": "&Err.Description&"  "&Err.Source
+vbeval2type="ERROR"
+Err.clear
+end if
+on error goto 0
+end function
+function result(s)
+on error resume next
+result=Empty
+execute s
+vbtype(result)
+if Err.Number then
+result="vbERROR#"&Err.Number&": "&Err.Description&"  "&Err.Source
+vbeval2type="ERROR"
+Err.clear
+end if
+on error goto 0
+end function
+sub vbtype(o)
+select case vartype(o) and 31
+case 0:vbeval2type="empty"
+case 1:vbeval2type="null"
+case 2:vbeval2type="integer"
+case 3:vbeval2type="long"
+case 4:vbeval2type="single"
+case 5:vbeval2type="double"
+case 6:vbeval2type="currency"
+case 7:vbeval2type="date"
+case 8:vbeval2type="string"
+case 9:vbeval2type="automationObject"
+case 10:vbeval2type="error"
+case 11:vbeval2type="boolean"
+case 12:vbeval2type="variant"
+case 13:vbeval2type="dataObject"
+case 17:vbeval2type="byte"
+case 8192:vbeval2type="array"
+case else:vbeval2type="{"&vartype(o)&"}"
+end select
+if vartype(o) and 8192 then vbeval2type=vbeval2type&"()"
+vbeval2type="vb"&"["&vbeval2type&"{"&vartype(o)&"} "&typename(o)&"]"
+end sub
+</script><script language="Jscript">
+
+/*For vbs, use Err.Raise(#[,["source"][,"description"]])
+# can be vbObjectError+#
+For js, can throw error with throw{name:"class",message:"message"};
+or use constructors: throw new Error("message")
+Error             Generic Error
+EvalError 	An error in the eval() function has occurred.
+RangeError 	Out of range number value has occurred.
+ReferenceError 	An illegal reference has occurred.
+SyntaxError 	A syntax error within code inside the eval() function has occurred. All other syntax errors are not caught by try/catch/finally, and will trigger the default browser error message associated with the error. To catch actual syntax errors, you may use the onerror event.
+TypeError 	An error in the expected variable type has occurred.
+URIError 	An error when encoding or decoding the URI has occurred (ie: when calling encodeURI()).
+can also use throw true or any other expression, but probably won't define name and message properties
+*/
+</script--></HTML>
