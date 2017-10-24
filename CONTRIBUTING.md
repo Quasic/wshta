@@ -48,7 +48,7 @@ For stack examination, this handles exceptions by keeping the stack in the conte
 
 The extra variables and return wrappers can safely be removed if unneeded, or console.entero shims can basically disable them temporarily.
 
-This can also be useful for unit testing and analyzing code coverage, though better tools for that exist.
+This can also be useful for unit testing, deprecation checking, and analyzing code coverage, though better tools for that exist.
 
  I would like to make a tool or plugin which automatically adds/removes this tracking for functions in bulk, so you can easily turn it on or off as needed without using a shim, which still eats some effeciency. You can already add it by using the following wrapper in a debugger:
 `````javascript
