@@ -155,7 +155,7 @@ t={Console:Console,Module:Module};
 for(i in t)if(o instanceof t[i])s="["+i+"]";
 var x={depth:0};
 x=console.entero(this instanceof Console&&this,"stringFrom",arguments,x);
-if((typeof o.inspect==="function"||OptS.apply(o.inspect)==='[object Function]')&&opt.customInspect)return x(o.inspect(opt.depth,Opt,opt));
+if(opt.customInspect&&(typeof o.inspect==="function"||OptS.apply(o.inspect)==='[object Function]'))return x(o.inspect(opt.depth,Opt,opt));
 	//no more returns before x()
 	i=1;
 	if(opt.depth)opt.depth--;
@@ -197,8 +197,8 @@ p=[],
 i,
 o=this.obj?stringFrom(this.obj,this.obj instanceof Module||this.obj instanceof Console?{depth:0}:this.O):'';
 if(this.p&&this.p.length)for(i=0;i<this.p.length;i++)p[i]=stringFrom(this.p[i],this.O);
-return(o
-+(o.length>45||o.indexOf("\n")>=0?'\n.':'.')
+return(//extra parens needed to span lines
+(o?o+(o.length>45||o.indexOf("\n")>=0?'\n.':'.'):'')
 +this.n+(this.p?'('+p.join(',')+')':'')
 +(this.O.deprecated?'[deprecated]':'')
 +(this.p&&this.p.callee?" as "+functionDescriptor(this.p.callee):'')
@@ -224,14 +224,15 @@ try{
 this.stream[k].writeLine(s);
 }catch(e){stderr.writeLine("Error logging to stream["+k+"]="+this.stringFrom(this.stream[k])+": "+this.stringFrom(e)+" Original error: "+s);}
 return x(d);};
-Console.prototype.enter=function(n,params,O){
-this.enter=Console.prototype.enter=function(n,params,O){return this.entero(O&&O.object,n,params,O);}
-this.formatLog(1,"Warning: Console.prototype.enter(name,params,options) is deprecated in favor of Console.prototype.entero(object,name,params,options)",O,"DEPRECATION_TRACE",1);
-return this.entero(O&&O.object,n,params,O);};
+Console.prototype.enter=function(n,params,O){var
+c=this instanceof Console?this:console;
+Console.prototype.enter=function(n,params,O){return(this instanceof Console?this:console).entero(O&&O.object,n,params,O);};
+c.formatLog(1,"Warning: Console.prototype.enter(name,params,options) is deprecated in favor of Console.prototype.entero(object,name,params,options)",O,"DEPRECATION_TRACE",1);
+return c.entero(O&&O.object,n,params,O);};
 Console.prototype.enteroAnyway=function(object,n,params,O){stack.oops=1;this.entero(object,n,params,O);};//allows calling entero in an onExit, but use cautiously
 Console.prototype.entero=function(object,n,params,O){var
 d=O||{depth:1},
-c=this,
+c=this instanceof Console?this:console,
 b=c.verbose||d.verbose,
 x=stack.length,
 f=function(o){if(b){
