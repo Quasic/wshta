@@ -199,7 +199,8 @@ o=this.obj?stringFrom(this.obj,this.obj instanceof Module||this.obj instanceof C
 if(this.p&&this.p.length)for(i=0;i<this.p.length;i++)p[i]=stringFrom(this.p[i],this.O);
 return(//extra parens needed to span lines
 (o?o+(o.length>45||o.indexOf("\n")>=0?'\n.':'.'):'')
-+this.n+(this.p?'('+p.join(',')+')':'')
++(this.n||"[StackItem "+this.n+"]")
++(this.p?'('+p.join(',')+')':'')
 +(this.O.deprecated?'[deprecated]':'')
 +(this.p&&this.p.callee?" as "+functionDescriptor(this.p.callee):'')
 //caller empty outside of function
