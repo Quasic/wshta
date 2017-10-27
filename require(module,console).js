@@ -302,16 +302,19 @@ r.resolve=function(n){return m.resolve(n);};
 r.main=main;
 r.requireFrom=arguments.callee;
 return r;}
-Module.prototype.resolve=function(n,debug){var x=console.entero(this,"resolve",arguments),i;
+Module.prototype.resolve=function(n,debug){var
+x=console.entero(this,"resolve",arguments),
+fd=n.search(R.fd)>=0,
+i;
 if(debug)console.log('resolving "'+n+'"');
 if(win)for(i=0;i<document.scripts.length;i++)cacheWinScript(i);
 if(cache.hasOwnProperty(n)||axo.hasOwnProperty(n)){if(debug)console.log("from cache");return x(n);}
-if((i=n.search(R.fx))>=0){if(debug)console.log("invalid character '"+n.charAt(i)+"'");return false;}
+if(!fd&&(i=n.search(R.fx))>=0){console.error("invalid character '"+n.charAt(i)+"'");return false;}
 resolvex.debug=debug;
-var r=n.replace(R.fp,"\\");
+//i=n.replace(R.fp,"\\");
+if(fd)return x(resolvex(n));
 if(n.substring(0,2)===".\\")return x(resolvex(fso.getFile(this.filename).parentFolder.path+'\\'+n));
-else if(n.substring(0,3)==="..\\")return x(resolvex(fso.getFile(this.filename).parentFolder.parentFolder.path+'\\'+n));
-else if(n.search(R.fd)>=0)return x(resolvex(n));
+if(n.substring(0,3)==="..\\")return x(resolvex(fso.getFile(this.filename).parentFolder.parentFolder.path+'\\'+n));
 return x(fso.fileexists(this.filename)&&resolvepath(fso.getFile(this.filename),n)||fso.fileexists(mainpath)&&resolvepath(fso.getFile(mainpath),n)||resolvepath({parentFolder:fso.getFolder(".")},n));
 };
 function resolvepath(F,n){var f=F,r;while(!f.isRootFolder){f=f.parentFolder;if(r=resolvex(f.path+"/"+n))return r;}return false;}
