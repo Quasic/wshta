@@ -28,6 +28,7 @@ along with this program. If not, see &lt;<a href="http://www.gnu.org/licenses/">
 <script src="Testcases.js"></script>
 <script>
 stringFrom=console.stringFrom;
+if(typeof testcasesWriteHTML==="undefined")alert("Can't find dependencies in Quasic/jsformat repo, run testcases(local).hta if you don't want to install this repo.");else
 testcasesWriteHTML(document,"wshta",Testcases.hta,{alert:true});
 document.onkeydown=function(){if(window.event.keyCode===115)require('debugConsole.js')();};
 </script>
