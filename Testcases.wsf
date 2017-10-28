@@ -1,0 +1,7 @@
+<job>
+<script language=JScript src="require(module,console).js"></script>
+<script language=JScript src=Testcases.js></script>
+<script language=JScript>
+Testcases.wsh();
+</script>
+</job>

@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><HTA:APPLICATION
+ID="htadoc"
+ICON="favicon.ico"
+BORDER="thick"
+BORDERSTYLE="complex"
+/><title>
+Quasic/wshta Testcases
+</title>
+<script language=JScript src="require(module,console).js"></script>
+<script language=JScript src="Testcases.js"></script>
+</head><body><script language=JScript>
+"use strict";//for what it's worth...
+document.write('<table><caption>'+document.title+'</caption><tr><th>Test</th><th>Passed</th><th>Result</th><th>Expected</th></tr>');
+window.onerror=function(a,b,c){document.write('<tr><th colspan="4" class="Fatal">'+a+" in "+b+"&lt;"+c+"&gt;</th></tr>");};
+function h(name){document.write('<tr><th colspan="4">'+name+'</th></tr>');}
+function t(js,expected){var
+x=console.entero(null,"testcasesWriteHTML::t",arguments),
+j=Testcases.HTML(js),
+E=Testcases.HTML(stringFrom(expected)),
+r,
+c;
+T++;
+r=e(js,expected);
+c=r[0];
+r=Testcases.HTML(stringFrom(r[1]));
+if(c!=="Pass")F[F.length]="{"+j+"} "+c+(c.substring(0,5)==="Pass "?"":": "+r+"\n!==\n"+E);
+document.write('<tr><td>'+j+'</td><td class="'+c+'">'+c+'</td><td>'+r+'</td><td>'+E+'</td></tr>');
+return x(c);}
+Testcases.hta(h,t);
+function e(/*js,expected*/){"strict mode";try{
+arguments.s=console.entero.getStackLength();
+arguments.r=eval(arguments[0]);
+return[(arguments.r===arguments[1]?"Pass":"Fail")+(console.entero.getStackLength()===arguments.s?'':" Stack Imbalance"+(console.entero.getStackLength()-arguments.s)),arguments.r];
+}catch(e){
+return["Exception",e];
+}}
+</script></table><noscript>Error: Scripts are disabled on this page. They are required to run this test.</noscript></body></html>

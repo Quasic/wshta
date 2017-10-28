@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><HTA:APPLICATION
+ID="htadoc"
+ICON="favicon.ico"
+BORDER="thick"
+BORDERSTYLE="complex"
+/><title>
+wshta Testcases
+</title>
+<link rel="stylesheet" href="../jsformat/testcases.css"/>
+<body>
+<h2>Quasic/wshta Testcases</h2>
+Copyright (C) <a href="//github.com/Quasic">Quasic of GitHub</a><br />
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see &lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
+<form>Press F4 to start debugger in dialog mode<span id="debuginit">, or <input type="button" value="click here" onclick="require('debugConsole.js')(0,document.forms[0],{resultHeight:300+&#34;px&#34;});debuginit.style.display='none'"/> to start in form mode</span>.</form>
+<noscript>This page is open source, but to run it, you need JavaScript enabled.</noscript>
+<script src="require(module,console).js"></script>
+<script src="../jsformat/HTML.js"></script>
+<script src="../jsformat/testcasesWriteHTML.js"></script>
+<script src="Testcases.js"></script>
+<script>
+stringFrom=console.stringFrom;
+testcasesWriteHTML(document,"wshta",Testcases.hta,{alert:true});
+document.onkeydown=function(){if(window.event.keyCode===115)require('debugConsole.js')();};
+</script>
+</body></html>
