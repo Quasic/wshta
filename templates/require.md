@@ -1,4 +1,4 @@
-#Including files with no script tags
+# Including files with no script tags
 Many files this library supports will have support for script tags: .html, .hta, .wsf
 
 For those which don't, you can still use []. Make sure to edit the paths in the following code to point to the file.

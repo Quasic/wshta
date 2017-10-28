@@ -188,9 +188,12 @@ function functionDescriptor(f){var s=f+'',i=s.indexOf(')');return i<2?s:s.substr
 function StackItem(o,n,p,O){this.n=n;this.p=p;if(typeof O==="object"){
 this.O=O;
 this.obj=o;
-if(O.deprecated)console.warn(this+" is deprecated. "+O.deprecated);
+if(O.deprecated){
+console.trace(this+" is deprecated. "+O.deprecated);
+deprecatedUse[(o?stringFrom(o,O)+'.':'')+n]=O.deprecated;
+}
 }else this.O={};
-if(!(''+n))console.trace("Empty stack name for "+this);
+if(!(n&&''+n))console.trace("Empty stack name for "+this);
 }
 StackItem.prototype.toString=function(){var
 p=[],
@@ -205,13 +208,14 @@ return(//extra parens needed to span lines
 +(this.p&&this.p.callee?" as "+functionDescriptor(this.p.callee):'')
 //caller empty outside of function
 );};
-var stack=[],tc={};
+var stack=[],tc={},deprecatedUse={};
 function Console(out,err){var x=console.entero(0,"require('console').Console",arguments);
 this.stream=[out,err||out];
 if(typeof out.writeLine==="undefined")throw x(new Error("out stream can't writeLine: "+this.stringFrom(out)));
 if(typeof this.stream[1].writeLine==="undefined")throw new Error("err stream can't writeLine: "+this.stringFrom(err));x();}
 Console.prototype.Console=Console;
 Console.prototype.getStackLength=function(){return stack.length;};
+Console.prototype.getDeprecatedUsage=function(){return deprecatedUse;};
 Console.prototype.dumpStack=function(o){this.trace(stack,o||{},"STACKDUMP");};
 Console.prototype.stringFrom=stringFrom;
 Console.prototype.functionDescriptor=functionDescriptor;
