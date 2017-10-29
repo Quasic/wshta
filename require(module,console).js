@@ -88,8 +88,10 @@ n=R.trim,
 c,
 d=null,
 e=h.readAll().replace(n,'');
-if(e&&!e.replace(/(,)|(\[|{)|(}|])|"(?:[^"\\\r\n]|\\["\\\/bfnrt]|\\u[\da-fA-F]{4})*"\s*:?|true|false|null|-?(?!0\d)\d+(?:\.\d+|)(?:[eE][+-]?\d+|)/g,function(a,b,e,f){return c&&b&&(d=0),0===d?a:(c=e||b,d+=!f-!e,"")}).replace(n,''))module.exports=x(Function("return "+e)());
-throw new Error("Invalid JSON: "+e);}//this function based on jQuery's from version 1.11.2, 2014 jQuery Foundation, Inc. [jquery.org/license]
+//this function is based on code from jQuery 1.11.2, 2014 jQuery Foundation, Inc. [jquery.org/license]
+if(e&&!e.replace(/(,)|(\[|{)|(}|])|"(?:[^"\\\r\n]|\\["\\\/bfnrt]|\\u[\da-fA-F]{4})*"\s*:?|true|false|null|-?(?!0\d)\d+(?:\.\d+|)(?:[eE][+-]?\d+|)/g,function(a,b,e,f){return c&&b&&(d=0),0===d?a:(c=e||b,d+=!f-!e,"")}).replace(n,''))
+module.exports=x(Function("return "+e)());
+throw new Error("Invalid JSON: "+e);}
 };
 mainpath=wsh?WScript.scriptFullName:win?window.location.href.search(/^file:\/\/\/[A-Z]:/)>=0&&fso.fileexists(unescape(window.location.href).substring(8))&&fso.getFile(unescape(window.location.href).substring(8)).path||fso.fileexists(unescape(window.location.href).substring(5))&&fso.getFile(unescape(window.location.href).substring(5)).path||"[Eval]":"[Eval]";
 if(wsh&&WScript.scriptFullName.search(R.fm)>=0)thispath=WScript.scriptFullName;
@@ -215,7 +217,6 @@ if(typeof out.writeLine==="undefined")throw x(new Error("out stream can't writeL
 if(typeof this.stream[1].writeLine==="undefined")throw new Error("err stream can't writeLine: "+this.stringFrom(err));x();}
 Console.prototype.Console=Console;
 Console.prototype.getStackLength=function(){return stack.length;};
-Console.prototype.getDeprecatedUsage=function(){return deprecatedUse;};
 Console.prototype.dumpStack=function(o){this.trace(stack,o||{},"STACKDUMP");};
 Console.prototype.stringFrom=stringFrom;
 Console.prototype.functionDescriptor=functionDescriptor;
@@ -256,6 +257,7 @@ if(b)c.stream[0].writeLine(stringTime(new Date)+" ENTER@stack["+x+"] "+stack[x]+
 return f;
 };
 Console.prototype.entero.getStackLength=function(){return stack.length;};
+Console.prototype.entero.getDeprecatedUsage=function(){return deprecatedUse;};
 Console.prototype.trace=function(msg,options,type){this.formatLog(1,msg,options,type||"TRACE",1);};
 Console.prototype.log=function(msg,options){this.formatLog(0,msg,options,"LOG");};
 Console.prototype.dir=function(o,options){this.formatLog(0,o,options,"INSPECT");};
