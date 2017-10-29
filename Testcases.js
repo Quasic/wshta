@@ -10,7 +10,7 @@ h=function(s){oh(Testcases.HTML(s));};
 Testcases.js(h,t);
 //hta tests
 document.onkeydown=function(){if(window.event.keyCode===115)require('debugConsole.js')();};
-Testcases.logs(h,t);
+Testcases.logs(oh,t);
 x();},
 amp:/&/g,
 lt:/</g,
@@ -53,7 +53,7 @@ cscript=true;
 stdout=require("fso").createTextFile("Testcases.log");
 close=function(){stdout.close();new require("Shell").shellExecute("Testcases.log");};
 }else close=function(){};
-stdout.writeLine("Quasic/wshta testcasees");
+stdout.writeLine("Quasic/wshta testcases");
 Testcases.js(h,t);
 //cscript/wscript tests
 stdout.writeLine((T-F.length)+' passed/'+T+' total testcases, '+F.length+' failures, result: '+(F.length?"Fail":"Pass"));
