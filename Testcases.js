@@ -1,3 +1,17 @@
+/* check that my scripts are working in whatever environment
+
+Copyright (C) Quasic on GitHub
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 Testcases={
 js:function(h,t){var//general
 x=console.entero(0,"Testcases.js",arguments);
@@ -26,7 +40,8 @@ wsh:function(oh,ot){var
 x=console.entero(0,"Testcases.wsh",arguments),
 cscript,
 stdout,
-close,
+close=function(){},
+inform=function(){},
 F=[],
 T=0,
 h=oh||function(name){stdout.writeLine(name);},
@@ -46,13 +61,14 @@ if(h!==oh||t!==ot)try{
 WScript.stdout.writeLine("");
 //CScript
 stdout=WScript.stdout;
-close=function(){stdout.writeLine("Press a key...");WScript.stdin.skip(1);};
+inform=function(){stdout.writeLine("Press a key...");WScript.stdin.skip(1);};
 cscript=true;
 }catch(e){
 //WScript
 stdout=require("fso").createTextFile("Testcases.log");
-close=function(){stdout.close();new require("Shell").shellExecute("Testcases.log");};
-}else close=function(){};
+close=function(){stdout.close();};
+inform=function(){new require("Shell").shellExecute("Testcases.log");};
+}
 stdout.writeLine("Quasic/wshta testcases");
 Testcases.js(h,t);
 //cscript/wscript tests
@@ -64,7 +80,9 @@ if(console.entero.readLog)stdout.writeLine('\nVerbose log:\n'+console.entero.rea
 }
 Testcases.logs(h,t);
 close();
-x(require('debugConsole.js'))();},
+if(WScript.Arguments.Named.Exists("D"))require('debugConsole.js')();
+else if(!WScript.Arguments.Named.Exists("Q"))inform();
+return x(F.length);},
 logs:function(h,t){var
 x=console.entero(0,"Testcases.logs",arguments),
 fso=require("fso"),
@@ -79,5 +97,5 @@ fso=new ActiveXObject("Scripting.FileSystemObject");
 h=fso.openTextFile("require(module,console).js",1);
 eval(h.readAll());
 h.close();
-Testcases.wsh();
+WScript.quit(Math.min(Testcases.wsh(),255));
 }
