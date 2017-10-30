@@ -195,7 +195,7 @@ console.trace(this+" is deprecated. "+O.deprecated);
 deprecatedUse[(o?stringFrom(o,O)+'.':'')+n]=O.deprecated;
 }
 }else this.O={};
-if(!(n&&''+n))console.trace("Empty stack name for "+this);
+//if(!(n&&''+n))console.trace("Empty stack name for "+this);
 }
 StackItem.prototype.toString=function(){var
 p=[],
